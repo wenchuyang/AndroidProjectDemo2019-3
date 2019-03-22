@@ -17,6 +17,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,8 +36,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startCall(View view){
-        showInputDialog();
-//        call();
+        showPswDialog();
+    }
+
+    private void showPswDialog() {
+        /*@setView 装入一个EditView
+         */
+        final EditText editText = new EditText(MainActivity.this);
+        AlertDialog.Builder inputDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        editText.setInputType(EditorInfo.TYPE_CLASS_PHONE);
+        inputDialog.setTitle("Please input password, then call me").setView(editText);
+        inputDialog.setPositiveButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        inputDialog.setNegativeButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String password = new SimpleDateFormat("MMddyyyy").format(new Date());
+                        if(editText.getText().toString().trim().equals(password)){
+                            call();
+                        }else{
+                            Toast.makeText(MainActivity.this,
+                                    "Wrong password " + editText.getText().toString()+ " ! DENIED!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        inputDialog.show();
     }
     private void showInputDialog() {
         /*@setView 装入一个EditView
@@ -75,7 +109,21 @@ public class MainActivity extends AppCompatActivity {
         List<ResolveInfo> activities = packageManager.queryIntentActivities(callIntent, 0);
         boolean isIntentSafe = activities.size() > 0;
 
-// Start an activity if it's safe
+        // Start an activity if it's safe
+        if (isIntentSafe) {
+            startActivity(callIntent);
+        }
+    }
+    public void call() {
+        String tel = "tel: 15075690870";
+        Uri number = Uri.parse(tel);
+        Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+        // Verify it resolves
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(callIntent, 0);
+        boolean isIntentSafe = activities.size() > 0;
+
+        // Start an activity if it's safe
         if (isIntentSafe) {
             startActivity(callIntent);
         }

@@ -13,6 +13,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_customer_base_dialog">CustomerBaseDialog</string>
-    <string name="info">INFO</string>
+
+
+    <string name="info">Info</string>
 </resources>
