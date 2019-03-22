@@ -14,4 +14,5 @@
         completions."
     </string>
     <string name="title_activity_customer_base_dialog">CustomerBaseDialog</string>
+    <string name="info">INFO</string>
 </resources>
