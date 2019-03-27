@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,13 +9,17 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -22,7 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-
+import static android.app.PendingIntent.getActivity;
+import android.support.v4.app.DialogFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,71 +37,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println((long)(Double.parseDouble("19.80")*100));
         setContentView(R.layout.activity_main);
+
     }
 
     public void startCall(View view){
-        showPswDialog();
+        showInputDialog();
     }
 
-    private void showPswDialog() {
-        /*@setView 装入一个EditView
-         */
-        final EditText editText = new EditText(MainActivity.this);
-        AlertDialog.Builder inputDialog =
-                new AlertDialog.Builder(MainActivity.this);
-        editText.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-        inputDialog.setTitle("Please input password, then call me").setView(editText);
-        inputDialog.setPositiveButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        inputDialog.setNegativeButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String password = new SimpleDateFormat("MMddyyyy").format(new Date());
-                        if(editText.getText().toString().trim().equals(password)){
-                            call();
-                        }else{
-                            Toast.makeText(MainActivity.this,
-                                    "Wrong password " + editText.getText().toString()+ " ! DENIED!",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        inputDialog.show();
-    }
     private void showInputDialog() {
-        /*@setView 装入一个EditView
-         */
-        final EditText editText = new EditText(MainActivity.this);
-        AlertDialog.Builder inputDialog =
-                new AlertDialog.Builder(MainActivity.this);
-        editText.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-        inputDialog.setTitle("Please input phone number, then call").setView(editText);
-        inputDialog.setPositiveButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+        View promptView = layoutInflater.inflate(R.layout.dialog_input, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilder.setView(promptView);
 
+        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(MainActivity.this, editText.getText(), Toast.LENGTH_SHORT).show();
                     }
-                });
-        inputDialog.setNegativeButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        call(editText.getText().toString().trim());
-//                            Toast.makeText(MainActivity.this,
-//                                    "Wrong password " + editText.getText().toString()+ " ! DENIED!",
-//                                    Toast.LENGTH_SHORT).show();
-                    }
-                });
-        inputDialog.show();
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
     public void call(String telNum) {
         fileOpUtil fileOp = new fileOpUtil();

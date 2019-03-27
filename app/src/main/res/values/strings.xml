@@ -16,4 +16,9 @@
 
 
     <string name="info">Info</string>
+    <string name="dialog_fire_missiles">FIRE MISSILES</string>
+    <string name="fire">FIRE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="dialog_message">This is a Dialog</string>
+    <string name="dialog_title">myDialog</string>
 </resources>
